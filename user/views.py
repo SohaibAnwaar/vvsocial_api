@@ -221,7 +221,7 @@ class searchUserFields(APIView):
 
 
             if 'about_user' in params:
-                results.extend(list(Profile.objects.filter(about_user=params['about_user'][0]).values()))
+                results.extend(list(Profile.objects.filter(about_user__contains={'hobbies':params['about_user'][0]}).values()))
 
             return JsonResponse({'response':results})
         except Exception as e:

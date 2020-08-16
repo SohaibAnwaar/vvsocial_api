@@ -1,5 +1,12 @@
 First we have to make a signup- to set user credientials into the database
 
+# Introduction 
+
+this backend is connected with postgress. So you need to start postgres and make a database with name vvsocial 
+Provide the credientails in the settings.py
+You also need to set your email and password in project-->user-->models.py--->password_reset_token_created function to get the emails of the password reset
+
+
 # Sign up 
 http://127.0.0.1:8000/user/signup/
 

@@ -140,8 +140,12 @@ class updateUserFields(APIView):
         try: 
             params = dict(request.POST) 
             user_profile = get_profile_instance(request.user.id)
-                
-            # update Birthdate
+
+            if 'email' in params:
+                user = User.objects.get(username = request.user)
+                user.email = params['email'][0]
+                user.save()
+
             if 'birht_date' in params:
                 user_profile.update(birth_date = datetime.strptime(params['birht_date'][0], '%Y-%m-%d'))
 
@@ -167,7 +171,7 @@ class updateUserFields(APIView):
                 user_profile.update(postal_code_4 = params['child_amount'][0])
 
             if 'postal_code_3' in params:
-                user_profile.update(postal_code_3 = params['postal_code_3'][0], '%Y-%m-%d')
+                user_profile.update(postal_code_3 = params['postal_code_3'][0])
 
             if 'locatity' in params:
                 user_profile.update(locatity = params['locatity'][0])
@@ -180,7 +184,7 @@ class updateUserFields(APIView):
 
 
             if 'about_user' in params:
-                user_profile.update(about_user = params['about_user'][0], '%Y-%m-%d')
+                user_profile.update(about_user = params['about_user'][0])
 
             if 'locatity' in params:
                 user_profile.update(locatity = params['locatity'][0])
@@ -188,11 +192,23 @@ class updateUserFields(APIView):
             if 'image' in params:
                 user_profile.update(image = params['image'][0])
 
-        return JsonResponse({'response':True})
+            return JsonResponse({'response':True})
         except Exception as e:
             return JsonResponse({'Pass parameter (username, newusername  and email) response': e})
             
-        
+
+def search(request):
+
+    template_name = 'search.html'
+
+    query = request.GET.get('q', '')
+    if query:
+        # query example
+        results = MyEntity.objects.filter(name__icontains=query).distinct()
+    else:
+        results = []
+    return JsonResponse({'Pass parameter (username, newusername  and email) response': results})
+
 
 
 

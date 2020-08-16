@@ -13,5 +13,4 @@ urlpatterns = [
     # Update user content urls
     path('updateEmail/', views.updateEmail.as_view(), name='update_email'),
     path('update_user/', views.updateUserFields.as_view(), name='update_birth_data'),
-    path('demo/', views.hello, name='demo'),
  ]

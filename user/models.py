@@ -26,8 +26,8 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
         # to:
         [reset_password_token.user.email],
          fail_silently=False,
-         auth_password="AsB_R6566",
-         auth_user="sohaibanwaar1203@gmail.com"
+         auth_password="******",
+         auth_user="*****************@gmil.com"
     )
 
 

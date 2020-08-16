@@ -104,23 +104,23 @@ def login_user(request):
 
 
 
-# Update Email of the User
-class updateEmail(APIView):
-    permission_classes = (IsAuthenticated,)
-    @csrf_exempt
-    def post(self, request):
-        try: 
-            params = dict(request.POST) 
-            print("params ",params) 
-            user, email = request.user, params['email'][0]
-            print(request.user)
+# # Update Email of the User
+# class updateEmail(APIView):
+#     permission_classes = (IsAuthenticated,)
+#     @csrf_exempt
+#     def post(self, request):
+#         try: 
+#             params = dict(request.POST) 
+#             print("params ",params) 
+#             user, email = request.user, params['email'][0]
+#             print(request.user)
             
-            user = User.objects.get(username = request.user)
-            user.email = email
-            user.save()
-            return JsonResponse({'response':True})
-        except Exception as e:
-            return JsonResponse({'Pass parameter (username, newusername  and email) response': e})
+#             user = User.objects.get(username = request.user)
+#             user.email = email
+#             user.save()
+#             return JsonResponse({'response':True})
+#         except Exception as e:
+#             return JsonResponse({'Pass parameter (username, newusername  and email) response': e})
 
 
 '''
@@ -170,18 +170,6 @@ class updateUserFields(APIView):
             if 'child_amount' in params:
                 user_profile.update(postal_code_4 = params['child_amount'][0])
 
-            if 'postal_code_3' in params:
-                user_profile.update(postal_code_3 = params['postal_code_3'][0])
-
-            if 'locatity' in params:
-                user_profile.update(locatity = params['locatity'][0])
-
-            if 'marital_status' in params:
-                user_profile.update(marital_status = params['marital_status'][0])
-
-            if 'child_amount' in params:
-                user_profile.update(postal_code_4 = params['child_amount'][0])
-
 
             if 'about_user' in params:
                 user_profile.update(about_user = params['about_user'][0])
@@ -195,22 +183,49 @@ class updateUserFields(APIView):
             return JsonResponse({'response':True})
         except Exception as e:
             return JsonResponse({'Pass parameter (username, newusername  and email) response': e})
+
+
+
+class searchUserFields(APIView):
+    permission_classes = (IsAuthenticated,)
+    @csrf_exempt
+    def post(self, request):
+        try: 
+            results = []
+            params = dict(request.POST) 
+            user_profile = get_profile_instance(request.user.id)
+
+            if 'birht_date' in params:
+                results.extend(list(Profile.objects.filter(birht_date=datetime.strptime(params['birht_date'][0], '%Y-%m-%d')).values()))
+
+            if 'genre' in params:
+                results.extend(list(Profile.objects.filter(genre=params['genre'][0]).values()))
+
+            if 'address' in params:
+                results.extend(list(Profile.objects.filter(address=params['address'][0]).values()))
+
+            if 'postal_code_4' in params:
+                results.extend(list(Profile.objects.filter(postal_code_4=params['postal_code_4'][0]).values()))
+
+            if 'postal_code_3' in params:
+                results.extend(list(Profile.objects.filter(postal_code_3=params['postal_code_3'][0]).values()))
+
+            if 'locatity' in params:
+                results.extend(list(Profile.objects.filter(locatity=params['locatity'][0]).values()))
             
+            if 'marital_status' in params:
+                results.extend(list(Profile.objects.filter(marital_status=params['marital_status'][0]).values()))
 
-def search(request):
-
-    template_name = 'search.html'
-
-    query = request.GET.get('q', '')
-    if query:
-        # query example
-        results = MyEntity.objects.filter(name__icontains=query).distinct()
-    else:
-        results = []
-    return JsonResponse({'Pass parameter (username, newusername  and email) response': results})
+            if 'child_amount' in params:
+                results.extend(list(Profile.objects.filter(child_amount=params['child_amount'][0]).values()))
 
 
+            if 'about_user' in params:
+                results.extend(list(Profile.objects.filter(about_user=params['about_user'][0]).values()))
+
+            return JsonResponse({'response':results})
+        except Exception as e:
+            return JsonResponse({'Pass parameter (username, newusername  and email) response': e})  
 
 
-def hello(request):
-    return JsonResponse({"response" : "Getting response"})
+
